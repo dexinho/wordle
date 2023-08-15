@@ -109,7 +109,6 @@ async function getData() {
             }
             let id = setTimeout(() => {
                 letterComboArr.length = 0
-                letterRows[startingRowIndex].style.animation = 0
             }, 500);
             timeoutIds.push(id)
 
