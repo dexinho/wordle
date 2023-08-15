@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <dialog>
+        <div id="leaderboard"></div>
+    </dialog>
+    <h1>Wordle</h1>
+    <div id="letter-blocks-container">
+        <div id="first-row-of-letters-div" class="letter-rows">
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+        </div>
+        <div id="second-row-of-letters-div" class="letter-rows">
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+        </div>
+        <div id="third-row-of-letters-div" class="letter-rows">
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+        </div>
+        <div id="fourth-row-of-letters-div" class="letter-rows">
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+        </div>
+        <div id="fifth-row-of-letters-div" class="letter-rows">
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+        </div>
+        <div id="sixth-row-of-letters-div" class="letter-rows">
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+            <div class="letter-blocks"></div>
+        </div>
+    </div>
+    <div id="typing-blocks-container">
+        <div class='typing-blocks' id="first-typing-row">
+            <div class="typing-letters" id="letter-q">Q</div>
+            <div class="typing-letters" id="letter-w">W</div>
+            <div class="typing-letters" id="letter-e">E</div>
+            <div class="typing-letters" id="letter-r">R</div>
+            <div class="typing-letters" id="letter-t">T</div>
+            <div class="typing-letters" id="letter-y">Y</div>
+            <div class="typing-letters" id="letter-u">U</div>
+            <div class="typing-letters" id="letter-i">I</div>
+            <div class="typing-letters" id="letter-o">O</div>
+            <div class="typing-letters" id="letter-p">P</div>
+        </div>
+        <div class='typing-blocks' id="second-typing-row">
+            <div class="typing-letters">A</div>
+            <div class="typing-letters">S</div>
+            <div class="typing-letters">D</div>
+            <div class="typing-letters">F</div>
+            <div class="typing-letters">G</div>
+            <div class="typing-letters">H</div>
+            <div class="typing-letters">J</div>
+            <div class="typing-letters">K</div>
+            <div class="typing-letters">L</div>
+        </div>
+        <div class='typing-blocks' id="third-typing-row">
+            <div class="enter-container" id="enter-container">
+                <div id="enter-key-div"><span id="enter-key-span">ENTER</span>
+                </div>
+            </div>
+            <div class="typing-letters">Z</div>
+            <div class="typing-letters">X</div>
+            <div class="typing-letters">C</div>
+            <div class="typing-letters">V</div>
+            <div class="typing-letters">B</div>
+            <div class="typing-letters">N</div>
+            <div class="typing-letters">M</div>
+            <div class="delete-container" id="delete-container">
+                <div id="delete-letter-div"><i class="fa-solid fa-delete-left"></i></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
