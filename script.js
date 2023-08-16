@@ -8,11 +8,20 @@ const timeoutIds = []
 let enterSwitch = true
 const allLettersSelected = []
 
-
-
 function getRandomWord() {
+    const dataToCopy = localStorage.getItem('wordsToGuess')
+    console.log(dataToCopy)
+    const file = new File([dataToCopy], {type: 'text/plain'})
+    console.log(file)
+    const url = URL.createObjectURL(file)
+    console.log(url)
+    const downloadLink = document.createElement('a')
+    downloadLink.href = url
+    downloadLink.download = 'data.txt'
+    downloadLink.textContent = 'Download Data'
+    document.body.appendChild(downloadLink)
+    
     const wordsToGuessArr = JSON.parse(localStorage.getItem('wordsToGuess')) || []
-
     return wordsToGuessArr[Math.floor(Math.random() * wordsToGuessArr.length)].toUpperCase()
 }
 
@@ -123,3 +132,4 @@ async function getData() {
 }
 
 let wordToGuess = getRandomWord()
+
