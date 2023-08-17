@@ -9,18 +9,6 @@ let enterSwitch = true
 const allLettersSelected = []
 
 function getRandomWord() {
-    const dataToCopy = localStorage.getItem('wordsToGuess')
-    console.log(dataToCopy)
-    const file = new File([dataToCopy], {type: 'text/plain'})
-    console.log(file)
-    const url = URL.createObjectURL(file)
-    console.log(url)
-    const downloadLink = document.createElement('a')
-    downloadLink.href = url
-    downloadLink.download = 'data.txt'
-    downloadLink.textContent = 'Download Data'
-    document.body.appendChild(downloadLink)
-    
     const wordsToGuessArr = JSON.parse(localStorage.getItem('wordsToGuess')) || []
     return wordsToGuessArr[Math.floor(Math.random() * wordsToGuessArr.length)].toUpperCase()
 }
@@ -57,6 +45,27 @@ deleteKeyContainer.addEventListener('click', () => {
     }
 })
 
+function colorBorders(){
+
+    return new Promise((resolve) => {
+        for (let i = 0; i < wordToGuess.length; i++) {
+            let id = setTimeout(() => {
+                currentRowLetters[i].style.animation = 'letterBlock 0.1s linear'
+                if (wordToGuess[i] === currentRowLetters[i].innerText) {
+                    currentRowLetters[i].style.backgroundColor = 'green'
+                }
+                else if (wordToGuess.split('').includes(currentRowLetters[i].innerText.toUpperCase())) {
+                    currentRowLetters[i].style.backgroundColor = 'yellow'
+                }
+                else currentRowLetters[i].style.backgroundColor = 'gray'
+
+                if (i === wordToGuess.length - 1) resolve()
+            }, i * 100);
+            timeoutIds.push(id)
+        }
+    })
+}
+
 
 async function getData() {
 
@@ -74,26 +83,15 @@ async function getData() {
             console.log('dataWord', dataWord)
             const wordsToGuessArr = JSON.parse(localStorage.getItem('wordsToGuess')) || []
 
+            // if (letterComboArr.join('') === )
+
             if (!wordsToGuessArr.includes(dataWord)) {
                 wordsToGuessArr.push(dataWord)
                 localStorage.setItem('wordsToGuess', JSON.stringify(wordsToGuessArr))
             }
-
+            
+            await colorBorders()
             console.log(wordToGuess)
-
-            for (let i = 0; i < wordToGuess.length; i++) {
-                let id = setTimeout(() => {
-                    currentRowLetters[i].style.animation = 'letterBlock 0.1s linear'
-                    if (wordToGuess[i] === currentRowLetters[i].innerText) {
-                        currentRowLetters[i].style.backgroundColor = 'green'
-                    }
-                    else if (wordToGuess.split('').includes(currentRowLetters[i].innerText.toUpperCase())) {
-                        currentRowLetters[i].style.backgroundColor = 'yellow'
-                    }
-                    else currentRowLetters[i].style.backgroundColor = 'gray'
-                }, i * 100);
-                timeoutIds.push(id)
-            }
 
             allLettersSelected.push(...letterComboArr)
             letterBlocks.forEach(block => {
@@ -105,6 +103,7 @@ async function getData() {
                 if (allLettersSelected.includes(letter.innerText))
                     letter.style.border = '2px solid red'
             })
+
 
             let id = setTimeout(() => {    
                 currentRowLetters = letterRows[++startingRowIndex] !== undefined ? letterRows[startingRowIndex].children : letterRows[--startingRowIndex].children
