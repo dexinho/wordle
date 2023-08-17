@@ -15,7 +15,7 @@ function getRandomWord() {
 
 typingLetters.forEach(letter => {
     letter.addEventListener('click', () => {
-       if (letter.classList.contains('typing-letters')) {
+        if (letter.classList.contains('typing-letters')) {
             for (let i = 0; i < currentRowLetters.length; i++) {
                 if (currentRowLetters[i].innerText === '') {
                     currentRowLetters[i].innerText = letter.innerText
@@ -45,7 +45,7 @@ deleteKeyContainer.addEventListener('click', () => {
     }
 })
 
-function colorBorders(){
+function colorBorders() {
 
     return new Promise((resolve) => {
         for (let i = 0; i < wordToGuess.length; i++) {
@@ -72,9 +72,11 @@ async function getData() {
     if (enterSwitch) {
         enterSwitch = !enterSwitch
         try {
+            letterRows[startingRowIndex].style.animation = ''
             const wordForLink = letterComboArr.join('')
             const data = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordForLink}`)
             const jsonData = await data.json()
+
 
             for (const id of timeoutIds) clearTimeout(id)
             timeoutIds.length = 0
@@ -83,14 +85,18 @@ async function getData() {
             console.log('dataWord', dataWord)
             const wordsToGuessArr = JSON.parse(localStorage.getItem('wordsToGuess')) || []
 
-            // if (letterComboArr.join('') === )
-
+            
             if (!wordsToGuessArr.includes(dataWord)) {
                 wordsToGuessArr.push(dataWord)
                 localStorage.setItem('wordsToGuess', JSON.stringify(wordsToGuessArr))
             }
             
             await colorBorders()
+
+        if (letterComboArr.join('') === wordToGuess) {
+            const dialogForEnding = document.querySelector('#dialog-for-ending')
+            dialogForEnding.showModal()
+        }
             console.log(wordToGuess)
 
             allLettersSelected.push(...letterComboArr)
@@ -104,31 +110,22 @@ async function getData() {
                     letter.style.border = '2px solid red'
             })
 
-
-            let id = setTimeout(() => {    
-                currentRowLetters = letterRows[++startingRowIndex] !== undefined ? letterRows[startingRowIndex].children : letterRows[--startingRowIndex].children
-            }, 500);
-            timeoutIds.push(id)
+            currentRowLetters = letterRows[++startingRowIndex] !== undefined ? letterRows[startingRowIndex].children : letterRows[--startingRowIndex].children
 
         } catch (err) {
+            console.log(letterRows[startingRowIndex])
             letterRows[startingRowIndex].style.animation = 'shakeRow 0.2s linear'
             for (let i = 0; i < currentRowLetters.length; i++) {
                 currentRowLetters[i].innerText = ''
             }
-            let id = setTimeout(() => {
-                letterComboArr.length = 0
-            }, 500);
-            timeoutIds.push(id)
-
+            letterComboArr.length = 0
+            letterRows[startingRowIndex].style.animation = ''
         } finally {
-            let id = setTimeout(() => {
-                letterComboArr.length = 0
-                enterSwitch = !enterSwitch
-            }, 500);
-            timeoutIds.push(id)
+            enterSwitch = !enterSwitch
+            letterComboArr.length = 0
         }
     }
 }
 
-let wordToGuess = getRandomWord()
+let wordToGuess = 'HELLO'
 
