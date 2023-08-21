@@ -12,7 +12,20 @@
 }
 body {
     width: 100%;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#quiz-container {
+    width: 500px;
+}
+#dialog-for-success {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    width: 300px;
+    height: 100px;
 }
 h1 {
     margin: 10px 0 10px 0;
