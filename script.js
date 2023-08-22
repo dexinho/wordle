@@ -1,3 +1,5 @@
+const dialogForSuccess = document.querySelector('#dialog-for-success')
+const dialogForFailure = document.querySelector('#dialog-for-failure')
 const letterRows = document.querySelectorAll('.letter-rows')
 const letterBlocks = document.querySelectorAll('.letter-blocks')
 let STARTING_ROW_INDEX = 0
@@ -7,10 +9,13 @@ const LETTER_COMBO_ARR = []
 const TIMEOUT_IDS = []
 let FETCH_SWITCH = true
 const ALL_LETTERS_SELECTED = []
+let SUCCESS_OR_FAIL_DIALOG_SWITCH = true
 
 function getRandomWord() {
     const fiveLetterWordsArr = JSON.parse(localStorage.getItem('fiveLetterWords')) || []
-    return fiveLetterWordsArr[Math.floor(Math.random() * fiveLetterWordsArr.length)].toUpperCase()
+    const wordToGuess = fiveLetterWordsArr[Math.floor(Math.random() * fiveLetterWordsArr.length)].toUpperCase()
+    console.log(wordToGuess)
+    return wordToGuess
 }
 
 // fetch('./list.txt').then(data => data.json()).then(words => {
@@ -89,7 +94,7 @@ async function getData() {
             const jsonData = await data.json()
             // console.log('word fetched', jsonData[0].word)
             clearTimeoutIds()
-            wordleBeingPlayed(jsonData[0].word)
+            await wordleBeingPlayed(jsonData[0].word)
         } catch (err) {
             // console.log('CATCH BLOCK', letterRows[STARTING_ROW_INDEX])
             letterRows[STARTING_ROW_INDEX].style.animation = 'shakeRow 0.2s linear'
@@ -103,14 +108,14 @@ async function getData() {
     }
 }
 
-async function wordleBeingPlayed(word) {
+async function wordleBeingPlayed(fetchedFiveLetterWord) {
     // console.log(letterRows[STARTING_ROW_INDEX])
-
-    addWordToLocalStorage(word)
+    ALL_LETTERS_SELECTED.push(...LETTER_COMBO_ARR)
+    addWordToLocalStorage(fetchedFiveLetterWord)
     await colorInsideOfLetterBlocks()
-    checkIfTheWordIsGuessed()
+    checkIfTheWordIsGuessed(fetchedFiveLetterWord)
 
-    colorBordersOfTypingAndLetterBlocks()
+    colorBordersOfTypingAndLetterBlocks('red')
     currentRowLetters = letterRows[++STARTING_ROW_INDEX] !== undefined
         ? letterRows[STARTING_ROW_INDEX].children
         : letterRows[--STARTING_ROW_INDEX].children
@@ -122,10 +127,25 @@ function clearTimeoutIds() {
     TIMEOUT_IDS.length = 0
 }
 
-function checkIfTheWordIsGuessed() {
-    if (LETTER_COMBO_ARR.join('') === wordToGuess) {
-        const dialogForEnding = document.querySelector('#dialog-for-success')
-        dialogForEnding.showModal()
+function slideModalFromTop(dialog){
+    dialog.classList.add('slide-from-top-transition')
+}
+function slideModalToTop(dialog){
+    dialog.classList.add('slide-to-top-transition')
+}
+
+async function checkIfTheWordIsGuessed(word) {
+    if (word.toUpperCase() === wordToGuess) {
+        await pauseForHowManyMilliseconds(250)
+        dialogForSuccess.showModal()
+        SUCCESS_OR_FAIL_DIALOG_SWITCH = true
+        slideModalFromTop(dialogForSuccess)
+    }
+    else if (letterRows[STARTING_ROW_INDEX + 1] === undefined) {
+        await pauseForHowManyMilliseconds(250)
+        dialogForFailure.showModal()
+        SUCCESS_OR_FAIL_DIALOG_SWITCH = false
+        slideModalFromTop(dialogForFailure)
     }
 }
 
@@ -138,23 +158,60 @@ function addWordToLocalStorage(word) {
     }
 }
 
-function colorBordersOfTypingAndLetterBlocks() {
-    ALL_LETTERS_SELECTED.push(...LETTER_COMBO_ARR)
+function colorBordersOfTypingAndLetterBlocks(color) {
     letterBlocks.forEach(block => {
         if (block.innerText !== '')
             block.style.border = '2px solid purple'
     })
-
     typingLetters.forEach(letter => {
-        if (ALL_LETTERS_SELECTED.includes(letter.innerText))
-            letter.style.border = '2px solid red'
+        if (ALL_LETTERS_SELECTED.includes(letter.innerText)) {
+            letter.style.boxShadow = '3px 3px 10px rgba(242, 17, 17, 0.5)'
+            letter.style.border = `2px solid ${color}`
+        }
+        else {
+            letter.style.boxShadow = '10px 10px 10px rgba(117, 87, 87, 0.1)'
+            letter.style.border = `2px solid purple`
+        }
     })
 }
 
-// function resetToDefaultScreen(){
+async function resetToDefaultScreen() {
+    for (const id of TIMEOUT_IDS) clearTimeoutIds(id)
+    TIMEOUT_IDS.length = 0
 
-// }
+    const successOrFailureModal = SUCCESS_OR_FAIL_DIALOG_SWITCH ? dialogForSuccess : dialogForFailure
+
+    slideModalToTop(successOrFailureModal)
+    await pauseForHowManyMilliseconds(500)
+    successOrFailureModal.classList.remove('slide-from-top-transition')
+    successOrFailureModal.classList.remove('slide-to-top-transition')
+    successOrFailureModal.close()
+
+    do {
+        currentRowLetters = letterRows[STARTING_ROW_INDEX].children
+        for (let i = 0; i < currentRowLetters.length; i++) {
+            currentRowLetters[i].style.transition = '0.3s ease-in'
+            currentRowLetters[i].innerText = ''
+            currentRowLetters[i].style.border = '2px solid gray'
+            currentRowLetters[i].style.backgroundColor = 'white'
+            currentRowLetters[i].style.animation = ''
+        }
+    }
+    while (letterRows[--STARTING_ROW_INDEX] !== undefined)
+    STARTING_ROW_INDEX = 0
+    ALL_LETTERS_SELECTED.length = 0
+    wordToGuess = getRandomWord()
+    await pauseForHowManyMilliseconds(500)
+    colorBordersOfTypingAndLetterBlocks()
+}
+
+const playAgainButtons = document.querySelectorAll('.play-again-buttons')
+playAgainButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        resetToDefaultScreen()
+    })
+})
 
 let wordToGuess = getRandomWord()
-console.log(wordToGuess)
+
 
