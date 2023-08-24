@@ -8,15 +8,37 @@ const typingLetters = document.querySelectorAll('.typing-letters')
 const LETTER_COMBO_ARR = []
 const TIMEOUT_IDS = []
 let FETCH_SWITCH = true
-const ALL_LETTERS_SELECTED = []
 let SUCCESS_OR_FAIL_DIALOG_SWITCH = true
+const LIST_OF_FIVE_LETTER_WORDS = ["ready", "freed", "frank", "bingo", "hello", "joint", "speak", "drugs", "lined", "index", "break", "burnt", "breed", "creed", "enter", "civil",
+    "crews", "hired", "fired", "bread", "tulip", "crest", "tonic", "cruse", "angel", "sheet", "other", "meant", "photo", "phone", "group", "catch", "match", "batch", "hatch", "fetch",
+    "patch", "latch", "great", "watch", "cream", "swing", "rings", "bring", "fling", "thing", "sling", "after", "apple", "crush", "makes", "hours", "tails", "house", "whole", "cling",
+    "couch", "coach", "relic", "bravo", "delta", "alpha", "micro", "macro", "dealt", "swear", "fates", "faith", "trust", "again", "crust", "since", "model", "props", "earns", "clove",
+    "globe", "moods", "money", "rerun", "scene", "scent", "dream", "worse", "close", "smell", "small", "worst", "scrap", "sword", "story", "fight", "begin", "trope", "crops", "limit"]
 
 function getRandomWord() {
-    const fiveLetterWordsArr = JSON.parse(localStorage.getItem('fiveLetterWords')) || []
+    const localStorageWords = JSON.parse(localStorage.getItem('fiveLetterWords')) || []
+    const fiveLetterWordsArr = localStorageWords.length > LIST_OF_FIVE_LETTER_WORDS.length
+        ? localStorageWords
+        : LIST_OF_FIVE_LETTER_WORDS
+
+
     const wordToGuess = fiveLetterWordsArr[Math.floor(Math.random() * fiveLetterWordsArr.length)].toUpperCase()
     console.log(wordToGuess)
     return wordToGuess
 }
+
+const greenColor = 'rgb(102, 204, 102)'
+const yellowColor = 'rgb(255, 234, 118)'
+const redColor = 'rgb(205, 92, 92)'
+
+const ALL_LETTERS_WITH_COLORS_OBJ = {}
+
+// function createObjectForLetters() {
+//     typingLetters.forEach(letter => {
+//         ALL_LETTERS_WITH_COLORS_OBJ[letter.innerText] = red
+//     })
+// }
+
 
 // fetch('./list.txt').then(data => data.json()).then(words => {
 //     localStorage.setItem('fiveLetterWords', JSON.stringify(words))
@@ -61,12 +83,14 @@ function colorInsideOfLetterBlocks() {
             let id = setTimeout(() => {
                 currentRowLetters[i].style.animation = 'letterBlock 0.1s linear'
                 if (wordToGuess[i] === currentRowLetters[i].innerText) {
-                    currentRowLetters[i].style.backgroundColor = 'green'
+                    currentRowLetters[i].style.backgroundColor = greenColor
                 }
                 else if (wordToGuess.split('').includes(currentRowLetters[i].innerText.toUpperCase())) {
-                    currentRowLetters[i].style.backgroundColor = 'yellow'
+                    currentRowLetters[i].style.backgroundColor = yellowColor
                 }
-                else currentRowLetters[i].style.backgroundColor = 'gray'
+                else {
+                    currentRowLetters[i].style.backgroundColor = redColor
+                }
 
                 if (i === wordToGuess.length - 1) resolve()
             }, i * 100);
@@ -85,6 +109,7 @@ const pauseForHowManyMilliseconds = delay => {
 
 async function getData() {
 
+
     if (FETCH_SWITCH) {
         FETCH_SWITCH = !FETCH_SWITCH
         try {
@@ -93,6 +118,10 @@ async function getData() {
             const data = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordForLink}`)
             const jsonData = await data.json()
             // console.log('word fetched', jsonData[0].word)
+            LETTER_COMBO_ARR.forEach(letter => {
+                if (!ALL_LETTERS_WITH_COLORS_OBJ.hasOwnProperty(letter))
+                    ALL_LETTERS_WITH_COLORS_OBJ[letter] = redColor
+            })
             clearTimeoutIds()
             await wordleBeingPlayed(jsonData[0].word)
         } catch (err) {
@@ -108,14 +137,29 @@ async function getData() {
     }
 }
 
+function updateLetterColors() {
+    for (let i = 0; i < currentRowLetters.length; i++) {
+        const letterBackgroundColor = currentRowLetters[i].style.backgroundColor
+        if (letterBackgroundColor === greenColor) {
+            ALL_LETTERS_WITH_COLORS_OBJ[currentRowLetters[i].innerText] = greenColor
+        }
+        else if (letterBackgroundColor === yellowColor && ALL_LETTERS_WITH_COLORS_OBJ[currentRowLetters[i].innerText] !== greenColor) {
+            ALL_LETTERS_WITH_COLORS_OBJ[currentRowLetters[i].innerText] = yellowColor
+        }
+        else if (letterBackgroundColor === redColor && ALL_LETTERS_WITH_COLORS_OBJ[currentRowLetters[i].innerText] === redColor) {
+            ALL_LETTERS_WITH_COLORS_OBJ[currentRowLetters[i].innerText] = redColor
+        } 
+    }
+}
+
 async function wordleBeingPlayed(fetchedFiveLetterWord) {
-    // console.log(letterRows[STARTING_ROW_INDEX])
-    ALL_LETTERS_SELECTED.push(...LETTER_COMBO_ARR)
     addWordToLocalStorage(fetchedFiveLetterWord)
     await colorInsideOfLetterBlocks()
+    updateLetterColors()
+    console.log(ALL_LETTERS_WITH_COLORS_OBJ)
     checkIfTheWordIsGuessed(fetchedFiveLetterWord)
 
-    colorBordersOfTypingAndLetterBlocks('red')
+    colorBordersOfTypingAndLetterBlocks(redColor)
     currentRowLetters = letterRows[++STARTING_ROW_INDEX] !== undefined
         ? letterRows[STARTING_ROW_INDEX].children
         : letterRows[--STARTING_ROW_INDEX].children
@@ -127,10 +171,10 @@ function clearTimeoutIds() {
     TIMEOUT_IDS.length = 0
 }
 
-function slideModalFromTop(dialog){
+function slideModalFromTop(dialog) {
     dialog.classList.add('slide-from-top-transition')
 }
-function slideModalToTop(dialog){
+function slideModalToTop(dialog) {
     dialog.classList.add('slide-to-top-transition')
 }
 
@@ -159,18 +203,31 @@ function addWordToLocalStorage(word) {
 }
 
 function colorBordersOfTypingAndLetterBlocks(color) {
+
     letterBlocks.forEach(block => {
         if (block.innerText !== '')
             block.style.border = '2px solid purple'
+        else {
+            block.style.border = '2px solid gray'
+        }
     })
+
     typingLetters.forEach(letter => {
-        if (ALL_LETTERS_SELECTED.includes(letter.innerText)) {
-            letter.style.boxShadow = '3px 3px 10px rgba(242, 17, 17, 0.5)'
+        if (ALL_LETTERS_WITH_COLORS_OBJ[letter.innerText] === yellowColor || ALL_LETTERS_WITH_COLORS_OBJ[letter.innerText] === greenColor) {
+            const color = ALL_LETTERS_WITH_COLORS_OBJ[letter.innerText] === greenColor
+                ? greenColor
+                : yellowColor
+
+            letter.style.boxShadow = `0px 0px 5px 1px ${color}`
             letter.style.border = `2px solid ${color}`
+        }
+        else if (ALL_LETTERS_WITH_COLORS_OBJ[letter.innerText] === redColor) {
+            letter.style.boxShadow = `0px 0px 5px 1px ${redColor}`
+            letter.style.border = `2px solid ${redColor}`
         }
         else {
             letter.style.boxShadow = '10px 10px 10px rgba(117, 87, 87, 0.1)'
-            letter.style.border = `2px solid purple`
+            letter.style.border = '2px solid purple'
         }
     })
 }
@@ -192,16 +249,17 @@ async function resetToDefaultScreen() {
         for (let i = 0; i < currentRowLetters.length; i++) {
             currentRowLetters[i].style.transition = '0.3s ease-in'
             currentRowLetters[i].innerText = ''
-            currentRowLetters[i].style.border = '2px solid gray'
+            currentRowLetters[i].style.border = '2px solid indianred'
             currentRowLetters[i].style.backgroundColor = 'white'
             currentRowLetters[i].style.animation = ''
         }
     }
     while (letterRows[--STARTING_ROW_INDEX] !== undefined)
+
     STARTING_ROW_INDEX = 0
-    ALL_LETTERS_SELECTED.length = 0
+    for (const key in ALL_LETTERS_WITH_COLORS_OBJ) delete ALL_LETTERS_WITH_COLORS_OBJ[key]
     wordToGuess = getRandomWord()
-    await pauseForHowManyMilliseconds(500)
+    await pauseForHowManyMilliseconds(250)
     colorBordersOfTypingAndLetterBlocks()
 }
 
@@ -212,6 +270,9 @@ playAgainButtons.forEach(button => {
     })
 })
 
+// createObjectForLetters()
 let wordToGuess = getRandomWord()
 
+const correctWordForEnding = document.querySelector('#the-correct-word-was-div')
+correctWordForEnding.innerText = `Correct word was ${wordToGuess}`
 

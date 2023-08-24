@@ -149,6 +149,7 @@ h1 {
     font-size: 20px;
     border-radius: 20%;
     box-shadow: 10px 10px 10px rgba(117, 87, 87, 0.1);
+    /* box-shadow: 1px 1px 4px 4px rgb(194, 209, 58); */
 }
 .typing-letters:hover {
     transition: 0.1s ease-in-out;
@@ -198,13 +199,14 @@ h1 {
     font-weight: bold;
     font-size: 12px;
     display: inline-block;
-    transform: translate(-24px, -6px);
-    color: rgb(125, 189, 87);
+    translate: -25px -5px;
+    transform: scaleY(1.2);
+    color: rgb(8, 62, 224)
 }
 .fa-staylinked {
     transform: translate(-11px, -12px);
     color: rgb(199, 9, 9);
 }
 .fa-delete-left {
-    color: royalblue;
+    color: rgb(8, 61, 219);
 }
