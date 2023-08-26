@@ -129,6 +129,7 @@ h1 {
     min-width: 400px;
     /* border: 2px solid green; */
     margin: 20px auto;
+    position: relative;
 }
 .typing-blocks {
     width: 100%;
@@ -210,19 +211,18 @@ h1 {
 .fa-delete-left {
     color: rgb(8, 61, 219);
 }
-.error-message-div {
+.error-message-container {
+    width: 100%;
     position: absolute;
+    top: -16px;
+}
+
+.error-message-div {
+    text-align: center;
     background-color: transparent;
     transition: 0.5s ease-in-out;
     color: rgb(255, 2, 2);
-    letter-spacing: 30px;
-    opacity: 0;
-    top: 35.5%;
-    font-size: 18px;
-}
-.error-message-show {
-    opacity: 1;
-}
-.error-message-hide {
+    font-size: 15px;
+    font-style: italic;
     opacity: 0;
 }
