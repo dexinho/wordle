@@ -13,24 +13,45 @@
 </head>
 
 <body>
+    <div class="night-mode-div">
+        <div class="night-mode-switch">
+            <div class="sun-container">
+                <div class="circle">
+                    <div class="sparks"></div>
+                    <div class="sparks"></div>
+                    <div class="sparks"></div>
+                    <div class="sparks"></div>
+                    <div class="sparks"></div>
+                    <div class="sparks"></div>
+                    <div class="sparks"></div>
+                    <div class="sparks"></div>
+                </div>
+            </div>
+            <div class="moon-container">
+                <div class="full-circle">
+                    <div class="inner-circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <dialog class="dialogs-success-failure" id="dialog-for-success">
-        <div id="container-for-dialog-for-sucess">
-            <div class='success-items' id="congratulations-div">CONGRATULATIONS</div>
-            <div class='success-items' id="you-guessed-the-word">You guess the right word!</div>
-            <div class='success-items' id='play-again-div'><button class="play-again-buttons"
+        <div class='dialog-containers' id="container-for-dialog-for-sucess">
+            <div class='success-items text-color-for-success-and-fail-dialogs' id="congratulations-div">CONGRATULATIONS</div>
+            <div class='success-items text-color-for-success-and-fail-dialogs' id="you-guessed-the-word">You guess the right word!</div>
+            <div class='success-items text-color-for-success-and-fail-dialogs' id='play-again-div'><button class="play-again-buttons"
                     id="play-again-success-button">PLAY AGAIN</button></div>
         </div>
     </dialog>
     <dialog class="dialogs-success-failure" id="dialog-for-failure">
-        <div id="container-for-dialog-for-failure">
-            <div class='failure-items' id="keep-trying-div">Keep trying!</div>
-            <div class='failure-items' id="the-correct-word-was-div">The word was</div>
-            <div class='failure-items' id='play-again-div'><button class="play-again-buttons"
+        <div class='dialog-containers' id="container-for-dialog-for-failure">
+            <div class='failure-items text-color-for-success-and-fail-dialogs' id="keep-trying-div">Keep trying!</div>
+            <div class='failure-items text-color-for-success-and-fail-dialogs' id="the-correct-word-was-div">The word was: <span id="the-correct-word-was-span"></span></div>
+            <div class='failure-items text-color-for-success-and-fail-dialogs' id='play-again-div'><button class="play-again-buttons"
                     id="play-again-failure-button">PLAY AGAIN</button></div>
         </div>
     </dialog>
     <div id="quiz-container">
-        <h1>Wordle</h1>
+        <h1 id="wordle-main-heading">Wordle</h1>
         <div id="letter-blocks-container">
             <div id="first-row-of-letters-div" class="letter-rows">
                 <div class="letter-blocks"></div>
@@ -144,8 +165,7 @@
             </div>
             <div class='typing-blocks' id="third-typing-row">
                 <div class="enter-container" id="enter-container">
-                    <div id="enter-key-div"><span id="enter-key-span">ENTER</span>
-                    </div>
+                    <div id="enter-key-div">ENTER</div>
                 </div>
                 <div class="typing-letters">
                     <div>Z</div>
