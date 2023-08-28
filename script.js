@@ -3,6 +3,7 @@ const dialogForFailure = document.querySelector('#dialog-for-failure')
 const letterRows = document.querySelectorAll('.letter-rows')
 const letterBlocks = document.querySelectorAll('.letter-blocks')
 const errorMessageDiv = document.querySelector('.error-message-div')
+const correctWordForEnding = document.querySelector('#the-correct-word-was-span')
 let STARTING_ROW_INDEX = 0
 let currentRowLetters = letterRows[STARTING_ROW_INDEX].children
 const typingLetters = document.querySelectorAll('.typing-letters')
@@ -10,12 +11,14 @@ const LETTER_COMBO_ARR = []
 const TIMEOUT_IDS = []
 let FETCH_SWITCH = true
 let SUCCESS_OR_FAIL_DIALOG_SWITCH = true
-
+let darkColor = '#121212'
 let WORD_TO_GUESS = 'hello'
 
+const LIST_OF_FIVE_LETTER_WORDS = ["ready","freed","frank","bingo","hello","joint","speak","drugs","lined","index","break","burnt","breed","creed","enter","civil","crews","hired","fired","bread","tulip","crest","tonic","cruse","angel","sheet","other","meant","photo","phone","group","catch","match","batch","hatch","fetch","patch","latch","great","watch","cream","swing","rings","bring","fling","thing","sling","after","apple","crush","makes","hours","tails","house","whole","cling","couch","coach","relic","bravo","delta","alpha","micro","macro","dealt","swear","fates","faith","trust","again","crust","since","model","props","earns","clove","globe","moods","money","rerun","scene","scent","dream","worse","close","smell","small","worst","scrap","sword","story","fight","begin","trope","crops","limit"]
+
 async function getRandomWord() {
-    const data = await fetch('./fiveLetterWords.txt')
-    const LIST_OF_FIVE_LETTER_WORDS = await data.json()
+    // const data = await fetch('fiveLetterWords.txt')
+    // const LIST_OF_FIVE_LETTER_WORDS = await data.json()
 
     const localStorageWords = JSON.parse(localStorage.getItem('fiveLetterWords')) || LIST_OF_FIVE_LETTER_WORDS
     localStorage.setItem('fiveLetterWords', JSON.stringify(localStorageWords))
@@ -28,9 +31,6 @@ async function getRandomWord() {
 
     WORD_TO_GUESS = localStorageWords[Math.floor(Math.random() * localStorageWords.length)].toUpperCase()
     console.log(WORD_TO_GUESS, localStorageWords.length)
-    
-    const correctWordForEnding = document.querySelector('#the-correct-word-was-div')
-    correctWordForEnding.innerText = `Correct word was ${WORD_TO_GUESS}`
 }
 
 const greenColor = 'rgba(102, 204, 102, 0.9)'
@@ -72,7 +72,6 @@ deleteKeyContainer.addEventListener('click', () => {
 })
 
 function colorInsideOfLetterBlocks() {
-    
     return new Promise((resolve) => {
         for (let i = 0; i < WORD_TO_GUESS.length; i++) {
             let id = setTimeout(() => {
@@ -103,7 +102,6 @@ const pauseForHowManyMilliseconds = delay => {
 }
 
 async function checkValidityOfTheGuess() {
-
     if (FETCH_SWITCH) {
         FETCH_SWITCH = !FETCH_SWITCH
         try {
@@ -158,9 +156,8 @@ async function wordleBeingPlayed(fetchedFiveLetterWord) {
         addWordToLocalStorage(fetchedFiveLetterWord)
         await colorInsideOfLetterBlocks()
         updateLetterColors()
-        console.log(ALL_LETTERS_WITH_COLORS_OBJ)
         checkIfTheWordIsGuessed(fetchedFiveLetterWord)
-    
+
         colorBordersOfTypingAndLetterBlocks()
         currentRowLetters = letterRows[++STARTING_ROW_INDEX] !== undefined
             ? letterRows[STARTING_ROW_INDEX].children
@@ -168,8 +165,6 @@ async function wordleBeingPlayed(fetchedFiveLetterWord) {
     } catch (err) {
         console.log(err)
     }
-    
-
 }
 
 function clearTimeoutIds() {
@@ -184,6 +179,18 @@ function slideModalToTop(dialog) {
     dialog.classList.add('slide-to-top-transition')
 }
 
+function writeFinalWordLetterByLetter(){
+    return new Promise(res => {
+        for (let i = 0; i < WORD_TO_GUESS.length; i++) {
+            let id = setTimeout(() => {
+                correctWordForEnding.textContent += WORD_TO_GUESS[i]
+                if (i === WORD_TO_GUESS.length - 1) res()
+            }, i * 250);
+            TIMEOUT_IDS.push(id)
+        }
+    })
+}
+
 async function checkIfTheWordIsGuessed(word) {
     if (word.toUpperCase() === WORD_TO_GUESS) {
         await pauseForHowManyMilliseconds(250)
@@ -192,10 +199,13 @@ async function checkIfTheWordIsGuessed(word) {
         slideModalFromTop(dialogForSuccess)
     }
     else if (letterRows[STARTING_ROW_INDEX + 1] === undefined) {
+        correctWordForEnding.textContent = ''
         await pauseForHowManyMilliseconds(250)
         dialogForFailure.showModal()
         SUCCESS_OR_FAIL_DIALOG_SWITCH = false
         slideModalFromTop(dialogForFailure)
+        await pauseForHowManyMilliseconds(1000)
+        await writeFinalWordLetterByLetter()
     }
 }
 
@@ -256,7 +266,7 @@ async function resetToDefaultScreen() {
             currentRowLetters[i].style.transition = '0.3s ease-in'
             currentRowLetters[i].innerText = ''
             currentRowLetters[i].style.border = '2px solid indianred'
-            currentRowLetters[i].style.backgroundColor = 'white'
+            currentRowLetters[i].style.backgroundColor = 'transparent'
             currentRowLetters[i].style.animation = ''
         }
     }
@@ -274,6 +284,48 @@ playAgainButtons.forEach(button => {
     button.addEventListener('click', () => {
         resetToDefaultScreen()
     })
+})
+
+function changeColorsOfLetterAndTypingBlocks(color) {
+    const textColor = document.querySelectorAll('.text-color-for-success-and-fail-dialogs')
+
+    wordleMainHeading.style.color = color
+
+    textColor.forEach(text =>  text.style.color = color)
+    typingLetters.forEach(typingLetter => typingLetter.style.color = color)
+    letterBlocks.forEach(letterBlock => letterBlock.style.color = color)
+}
+
+const moonContainer = document.querySelector('.moon-container')
+const sunContainer = document.querySelector('.sun-container')
+const wordleMainHeading = document.querySelector('#wordle-main-heading')
+const nightModeSwitch = document.querySelector('.night-mode-switch')
+const nightModeDiv = document.querySelector('.night-mode-div')
+const dialogSuccessAndFailure = document.querySelectorAll('.dialogs-success-failure')
+nightModeDiv.addEventListener('click', () => {
+    nightModeSwitch.classList.toggle('on')
+    if (nightModeSwitch.classList.contains('on')) {
+        document.body.style.backgroundColor = '#121212'
+        dialogSuccessAndFailure.forEach(container => {
+            container.style.backgroundColor = '#121212'
+            container.style.border = '2px solid whitesmoke'
+        })
+        changeColorsOfLetterAndTypingBlocks('whitesmoke')
+        sunContainer.style.display = 'block'
+        moonContainer.style.display = 'none'
+        nightModeDiv.style.border = '2px solid whitesmoke'
+
+    } else {
+        document.body.style.backgroundColor = 'white'
+        dialogSuccessAndFailure.forEach(container => {
+            container.style.backgroundColor = 'white'
+            container.style.border = '2x solid #121212'
+        })
+        changeColorsOfLetterAndTypingBlocks('black')
+        sunContainer.style.display = 'none'
+        moonContainer.style.display = 'block'
+        nightModeDiv.style.border = '2px solid #121212'
+    }
 })
 
 getRandomWord()
