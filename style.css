@@ -15,6 +15,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: background-color 0.3s ease-in-out;
 }
 #quiz-container {
     width: 500px;
@@ -37,6 +38,7 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     row-gap: 23px;
+    background-color: transparent;
 }
 .success-items, .failure-items {
     margin: auto;
@@ -59,7 +61,7 @@ body {
     height: 95%;
 }
 .play-again-buttons:hover {
-    transition: 0.1s ease-in;
+    transition: scale 0.1s ease-in;
     scale: 1.1;
 }
 #congratulations-div, #keep-trying-div {
@@ -94,6 +96,7 @@ h1 {
     border: 2px solid gray;
     font-size: 45px;
     text-align: center;
+    background-color: transparent;
 }
 @keyframes letterBlock {
     0% {
@@ -153,15 +156,15 @@ h1 {
     /* box-shadow: 1px 1px 4px 4px rgb(194, 209, 58); */
 }
 .typing-letters:hover {
-    transition: 0.1s ease-in-out;
+    transition: scale 0.1s ease-in-out;
     scale: 1.1;
 }
 .typing-letters:active {
-    transition: 0.1s ease-in-out;
+    transition: scale 0.1s ease-in-out;
     scale: 1;
 }
 
-#delete-letter-div, #enter-key-div {
+#delete-letter-div {
     padding-left: 20px;
     font-size: 15px;
 }
@@ -173,16 +176,17 @@ h1 {
     align-items: center;
     border: 2px solid rgb(199, 115, 199);
     border-radius: 20%;
+    overflow: hidden;
 }
 .enter-container:hover, .delete-container:hover{
     scale: 1.1;
-    transition: 0.1s ease-in-out;
+    transition: scale 0.1s ease-in-out;
 }
 .enter-container:active, .delete-container:active{
     scale: 1;
-    transition: 0.1s ease-in-out;
+    transition: scale 0.1s ease-in-out;
 }
-#enter-key-div, #delete-letter-div {
+#delete-letter-div {
     width: 10px;
     height: 10px;
     text-align: center;
@@ -196,20 +200,22 @@ h1 {
     transform: translate(-19px, -8px);
     font-size: 25px;
 }
-#enter-key-span {
+#enter-key-div {
+    width: 50px;
+    height: 20px;
     font-weight: bold;
     font-size: 12px;
-    display: inline-block;
-    translate: -25px -5px;
     transform: scaleY(1.2);
-    color: rgb(8, 62, 224)
+    color: rgb(73, 112, 230);
+    text-align: center;
+    translate: 0 2.5px;
 }
 .fa-staylinked {
     transform: translate(-11px, -12px);
     color: rgb(199, 9, 9);
 }
 .fa-delete-left {
-    color: rgb(8, 61, 219);
+    color: rgb(64, 106, 233);
 }
 .error-message-container {
     width: 100%;
@@ -225,4 +231,124 @@ h1 {
     font-size: 15px;
     font-style: italic;
     opacity: 0;
+}
+
+.night-mode-div {
+    position: absolute;
+    top: 20%;
+    left: -50px;
+    border: 2px solid rgb(22, 22, 22);
+    border-radius: 0 10% 10% 0;
+    box-shadow: 3px 3px 3px rgba(66, 54, 231, 0.3);
+    height: 90px;
+    padding: 10px;
+    border-left: 0px !important;
+    z-index: 100;
+}
+
+.night-mode-div:hover {
+    left: 0px;
+}
+#the-correct-word-was-span {
+    display: inline-block;
+    width: 60px;
+    font-weight: bold;
+}
+
+.night-mode-switch {
+    width: 50px;
+    height: 40px;
+    border-radius: 100%;
+    transition: margin-top 0.1s ease-in;
+    /* margin-top: 0%; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.on {
+    margin-top: 30px;
+}
+
+.sun-container {
+    width: 500px;
+    height: 230px;
+    translate: 0 25px;
+    scale: 0.2;
+    display: none;
+}
+
+.circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    background-color: rgb(238, 235, 89);
+    position: relative;
+}
+
+.sparks {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: rgb(201, 216, 68);
+    border-radius: 0 100% 0 100%;
+}
+.sparks:nth-child(1) {
+    left: -20px;
+    top: -10px;
+}
+.sparks:nth-child(2) {
+    left: 65px;
+    top: -45px;
+    rotate: 45deg;
+}
+.sparks:nth-child(3) {
+    left: 145px;
+    top: -10px;
+    rotate: 90deg;
+}
+.sparks:nth-child(4) {
+    left: 175px;
+    top: 60px;
+    rotate: 135deg;
+}
+.sparks:nth-child(5) {
+    left: 145px;
+    top: 135px;
+    rotate: 180deg;
+}
+.sparks:nth-child(6) {
+    left: 65px;
+    top: 170px;
+    rotate: 45deg;
+}
+.sparks:nth-child(7) {
+    left: -20px;
+    top: 135px;
+    rotate: 90deg;
+}
+.sparks:nth-child(8) {
+    left: -45px;
+    top: 60px;
+    rotate: 135deg;
+}
+
+.moon-container {
+    width: 500px;
+    height: 230px;
+    translate: 0 25px;
+    scale: 0.4;
+    transform: scaleX(-1);
+}
+
+.full-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    background-color: rgb(58, 55, 55);
+}
+.inner-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+    background-color: white;
 }
