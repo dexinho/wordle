@@ -134,15 +134,7 @@ h1 {
     margin: 20px auto;
     position: relative;
 }
-.typing-blocks {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 5px;
-}
+
 .typing-letters {
     width: 30px;
     height: 40px;
@@ -154,6 +146,15 @@ h1 {
     border-radius: 20%;
     box-shadow: 10px 10px 10px rgba(117, 87, 87, 0.1);
     /* box-shadow: 1px 1px 4px 4px rgb(194, 209, 58); */
+}
+.typing-blocks {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 .typing-letters:hover {
     transition: scale 0.1s ease-in-out;
@@ -178,14 +179,15 @@ h1 {
     border-radius: 20%;
     overflow: hidden;
 }
-.enter-container:hover, .delete-container:hover{
-    scale: 1.1;
-    transition: scale 0.1s ease-in-out;
-}
 .enter-container:active, .delete-container:active{
     scale: 1;
     transition: scale 0.1s ease-in-out;
 }
+.enter-container:hover, .delete-container:hover{
+    scale: 1.1;
+    transition: scale 0.1s ease-in-out;
+}
+
 #delete-letter-div {
     width: 10px;
     height: 10px;
@@ -223,16 +225,6 @@ h1 {
     top: -16px;
 }
 
-.error-message-div {
-    text-align: center;
-    background-color: transparent;
-    transition: 0.5s ease-in-out;
-    color: rgb(255, 2, 2);
-    font-size: 15px;
-    font-style: italic;
-    opacity: 0;
-}
-
 .night-mode-div {
     position: absolute;
     top: 20%;
@@ -245,6 +237,17 @@ h1 {
     border-left: 0px !important;
     z-index: 100;
 }
+
+.error-message-div {
+    text-align: center;
+    background-color: transparent;
+    transition: 0.5s ease-in-out;
+    color: rgb(255, 2, 2);
+    font-size: 15px;
+    font-style: italic;
+    opacity: 0;
+}
+
 
 .night-mode-div:hover {
     left: 0px;
